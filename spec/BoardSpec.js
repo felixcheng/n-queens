@@ -4,6 +4,8 @@ describe("Board", function() {
     return word[0].toUpperCase() + word.slice(1);
   };
 
+  var board = new Board({n:5});
+
   var verifyConflictTypes = function(expectedConflicts, matrix){
     // The Board() constructor will accept a matrix and build that into a (Backbone) Board object (as defined in Board.js)
     var board = new Board(matrix);
