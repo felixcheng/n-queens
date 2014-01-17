@@ -12,37 +12,40 @@
 
 
 // return a matrix (an array of arrays) representing a single nxn chessboard, with n rooks placed such that none of them can attack each other
-window.findNRooksSolution = function(n){
+window.findNRooksSolution = function(n, returnType){
   var solution = []; //fixme
-  var emptyBoard = [];
-  for (var i = 0; i < n; i++){
-    var row =[];
-    for (var j = 0; j < n; j++){
-      row.push(false);  
-    }
-    emptyBoard.push(row);
-  }
+  var emptyBoard = new window.Board({n:n}).rows();
 
-  var placeRook = function(currentBoard, currentColumn){
-    debugger
-    for (var row = 0; row < n; row++) {
-      var tempBoard = currentBoard.slice(0);
-      //debugger
-      console.log(tempBoard[currentColumn])
-      tempBoard[currentColumn][row] = true;
-      if (currentColumn < n - 1){
-        placeRook(tempBoard, currentColumn+1);
+  var deeplyCopyArray = function(array){
+    var newArray = [];
+    for(var i = 0; i < array.length; i++){
+      if(Array.isArray(array[i])){
+        newArray.push(deeplyCopyArray(array[i]))
+      } else {
+        newArray.push(array[i]);
       }
     }
-    console.log(currentBoard)
+    return newArray;
   };
 
-  // var rook = [Math.floor(Math.random())*n, Math.floor(Math.random())*n];
-  // solution.push(rook);
 
-  placeRook(emptyBoard, 0);
-
-  return emptyBoard;
+  var placeRook = function(existingBoard, currentColumn){
+    for (var row = 0; row < n; row++) {     
+      var newBoard = deeplyCopyArray(existingBoard);
+      newBoard[currentColumn][row] = true;
+      if(!testBoard.hasAnyRooksConflicts()){
+        if (currentColumn < n - 1){
+          placeRook(newBoard, currentColumn+1);
+        } else {
+          var testBoard = new window.Board(newBoard);
+          solution.push(newBoard);
+        } 
+      }
+    }
+  };
+  
+placeRook(emptyBoard, 0);
+return solution[0];
 }; 
 
 
